@@ -1,0 +1,82 @@
+
+#Gráficos interactivos con plotly#
+
+# https://plotly.com/r/
+
+installed.packages("plotly")
+install.packages("ggplot2")
+
+#Scatter plot
+library(plotly)
+data(iris)
+
+fig <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, color=~Species)
+
+fig
+
+# Sacar barra de opciones y zoom
+fig%>%
+  layout(yaxis = list(fixedrange = TRUE),
+         showlegend = TRUE,
+         xaxis = list(fixedrange = TRUE)) %>%
+  config(displayModeBar = FALSE)
+
+
+#Line plot
+library(plotly)
+
+x <- c(1:50)
+random_y <- rnorm(50, mean = 0)
+data <- data.frame(x, random_y)
+
+fig <- plot_ly(data, x = ~x, y = ~random_y, type = 'scatter', mode = 'lines')
+
+fig
+
+
+
+#Histogramas
+library(plotly)
+fig <- plot_ly(x = ~rnorm(50), type = "histogram")
+
+fig
+
+#Con 2 grupos
+fig <- plot_ly(alpha = 0.6)
+fig <- fig %>% add_histogram(x = ~rnorm(500))
+fig <- fig %>% add_histogram(x = ~rnorm(500) + 1)
+fig <- fig %>% layout(barmode = "overlay")
+
+fig
+
+
+
+#Boxplot
+library(plotly)
+fig <- plot_ly(y = ~rnorm(50), type = "box")
+fig <- fig %>% add_trace(y = ~rnorm(50, 1))
+
+fig
+
+
+#Convertir desde ggplot2
+
+library(plotly)
+library(ggplot2)
+
+set.seed(1234)
+
+dfGamma = data.frame(nu75 = rgamma(100, 0.75),
+                     nu1 = rgamma(100, 1),
+                     nu2 = rgamma(100, 2))
+
+dfGamma = stack(dfGamma)
+
+p <- ggplot(dfGamma, aes(x = values)) +
+  stat_density(aes(group = ind, color = ind),position="identity",geom="line")
+
+p
+
+fig <- ggplotly(p)
+
+fig
