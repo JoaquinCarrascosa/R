@@ -1,0 +1,36 @@
+# Importar bases de datos en csv, excel, Stata y SPSS a R #
+
+install.packages("readr")
+install.packages("haven")
+install.packages("readxl")
+
+install.packages("tidyverse")
+
+#
+
+#csv
+library(readr)
+BaseR <- read_delim("C:/Users/joaqu/Desktop/BaseRcsv.csv", 
+                    ";", escape_double = FALSE, trim_ws = TRUE)
+View(BaseR)
+
+#excel
+
+library(readxl)
+BaseR <- read_excel("C:/Users/joaqu/Desktop/BaseR.xlsx")
+View(BaseR)
+
+#
+class(BaseRcsv)
+
+#stata (.dta)
+
+library(haven)
+auto <- read_dta("C:/Program Files (x86)/Stata13/auto.dta")
+View(auto)
+
+#spss (.sav)
+  
+library(haven)
+accidents <- read_sav("C:/Program Files/IBM/SPSS/Statistics/25/Samples/English/accidents.sav")
+View(accidents)
