@@ -1,0 +1,40 @@
+
+#Publicar gráficos online - Rpubs y PLotly
+
+install.packages("ggplot2")
+library(ggplot2)
+
+install.packages("plotly")
+library(plotly)
+
+
+
+data(iris)
+
+
+g1<- ggplot(iris) +
+  aes(x = Sepal.Length, y = Sepal.Width, colour = Species) +
+  geom_point(size = 3L) +
+  scale_color_hue() +
+  theme_classic()
+
+
+g1int = ggplotly(p= g1) %>%
+  layout(yaxis = list(fixedrange = TRUE),
+         showlegend = TRUE,
+         xaxis = list(fixedrange = TRUE)) %>%
+  config(displayModeBar = FALSE)
+
+g1int
+
+
+#publicar en Rpubs
+
+
+#Publicar en plotly
+
+Sys.setenv("plotly_username"="JCarrascosa")
+Sys.setenv("plotly_api_key"="uI9NshiZKcHIUs38CUO9")
+api_create(g1int, "Gráfico")
+
+
