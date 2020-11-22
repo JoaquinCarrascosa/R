@@ -1,0 +1,81 @@
+# Introducción al análisis de secuencias con TraMineR #
+
+# TraMineR is a R-package for mining, describing and visualizing sequences of states or events, *
+# and more generally discrete sequence data.
+# Its primary aim is the analysis of biographical longitudinal data in the social sciences,
+# such as data describing careers or family trajectories.
+# *
+# Gabadinho, A., Ritschard, G., Müller, N.S. & Studer, M. (2011)
+# Analyzing and visualizing state sequences in R with TraMineR
+# *Journal of Statistical Software. Vol. 40(4), pp. 1-37.
+
+# http://traminer.unige.ch/
+# http://traminer.unige.ch/preview-main.shtml
+
+install.packages("TraMineR")
+library(TraMineR)
+
+data(mvad)
+seqstatl(mvad[, 17:86])
+
+
+mvad.alphabet <- c("employment", "FE", "HE", "joblessness", "school", 
+                   "training")
+
+mvad.labels <- c("employment", "further education", "higher education", 
+                 "joblessness", "school", "training")
+
+mvad.scodes <- c("EM", "FE", "HE", "JL", "SC", "TR")
+
+mvad.seq <- seqdef(mvad, 17:86, alphabet = mvad.alphabet, states = mvad.scodes, 
+                   labels = mvad.labels, xtstep = 6)
+
+# Gráfico de secuencias#
+seqIplot(mvad.seq, sortv = "from.start", with.legend = "right")
+
+# Gráfico de ordenado desde el final#
+seqIplot(mvad.seq, sortv = "from.end", with.legend = "right")
+
+
+#Gráfico de 10 secuencias más comunes#
+seqfplot(mvad.seq, with.legend = "right", border = NA)
+
+#Gráfico de frecuencias de estados#
+seqdplot(mvad.seq, with.legend = "right", border = NA)
+
+#Gráfico según grupos de una variable (hombres/mujeres)
+seqdplot(mvad.seq,group=mvad$male, with.legend = "right", border = NA)
+
+#Índice de Entropía
+seqHtplot(mvad.seq)
+
+#Estado modal#
+seqmsplot(mvad.seq, with.legend = "right", border = NA, )
+
+
+# Construcción de una tipología de trayectorias#
+#
+dist.om1 <- seqdist(mvad.seq, method = "OM", indel = 1, sm = "TRATE")
+library(cluster)
+clusterward1 <- agnes(dist.om1, diss = TRUE, method = "ward")
+plot(clusterward1, which.plot = 2)
+cl1.4 <- cutree(clusterward1, k = 4)
+cl1.4fac <- factor(cl1.4, labels = paste("Type", 1:4))
+
+#Secuencias#
+seqIplot(mvad.seq, group = cl1.4fac, sortv = "from.start")
+
+#Estados#
+seqdplot(mvad.seq, group = cl1.4fac, border = NA)
+
+#Secuencias más representativas#
+seqrplot(mvad.seq, diss = dist.om1, group = cl1.4fac,
+         border = NA)
+
+
+#
+# Sumar columna con variable de TIPO
+
+mvad$Type <- cl1.4
+
+table(mvad$Type)
