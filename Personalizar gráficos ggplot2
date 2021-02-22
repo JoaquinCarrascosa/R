@@ -1,0 +1,75 @@
+
+############################################################
+# Personalizar gráficos en ggplot2                              #
+############################################################
+
+library(ggplot2)
+library(ggthemes)
+
+#data
+data(iris)
+
+#Gráfico base
+
+rm(p)
+p<- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width))+
+  geom_point()
+p
+
+#Sumamos colores según especie y tamaño según el ancho del pétalo
+#Sumamos línea de mejor ajuste
+rm(p)
+p<- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species, size=Petal.Width))+
+  geom_point()+
+  geom_smooth()
+  
+p
+
+#Etiquetas: título, subtítulo, eje X e Y, color
+#Alpha (transparencia)
+#sacar banda de margén de error
+rm(p)
+p<- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species, size=Petal.Width, alpha=0.8))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
+  labs(title = "Largo y ancho del sépalo de flores",
+       subtitle = "data Iris",
+       x = "Largo del sépalo (cm)",
+       y = "Ancho del sépalo (cm)",
+       color ="Especie",
+       size = " Tamaño")
+p
+
+#Versión final
+#Sumamos Theme (gdocs)
+#Escala de colores brewer (paleta Dark2)
+#Formato de títulos y eje (colres, tamaño, negrita)
+
+rm(pf)
+pf<- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species, size=Petal.Width, alpha=0.8))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
+  labs(title = "Largo y ancho del sépalo de flores",
+       subtitle = "data Iris",
+       x = "Largo del sépalo (cm)",
+       y = "Ancho del sépalo (cm)",
+       color =list(text='Especie'),
+       size = " Tamaño )")+
+       guides(size = FALSE, alpha=FALSE)+
+  theme_gdocs() +
+  theme(legend.title = element_text(color="black", size=12, face="bold"),
+        plot.subtitle = element_text(color="grey", size=14, face="bold.italic"),
+        axis.title.x = element_text(color="black", size=12, face="bold"),
+        axis.title.y = element_text(color="black", size=12, face="bold"),
+  plot.title = element_text(color="black", size=18, face="bold")) +
+   scale_colour_brewer(palette = "Dark2")
+
+pf
+
+
+#themes#
+#https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/
+
+#paletas brewer#
+#https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html
+
