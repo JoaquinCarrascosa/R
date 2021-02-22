@@ -1,0 +1,26 @@
+
+library(ggplot2)
+#data
+data(iris)
+
+#Cheatsheet de colores 
+#http://applied-r.com/r-color-tables/#table-code
+
+#https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf
+
+#Color picker en google para elegir hexadecimal
+
+colores = c("gold", "deepskyblue", "orchid")
+
+colores = c("#88f03e", "#ffec1f", "#2c55db")
+
+#
+rm(p)
+p<- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species, size=Petal.Width))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
+  labs(title = "Largo y ancho del sépalo de flores")+
+  guides(size=FALSE)+
+  scale_color_manual(values = colores)
+
+p
