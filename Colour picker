@@ -1,0 +1,35 @@
+
+library(ggplot2)
+#data
+data(iris)
+
+colores <- c("#1f78b4", "#33a02c", "#e31a1c")
+
+
+rm(p)
+p<- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species))+
+  geom_point()+
+  labs(title = "Largo y ancho del sépalo de flores")+
+  guides(size=FALSE)+
+  scale_color_manual(values = colores)
+
+p
+
+#
+
+install.packages("colourpicker")
+library(colourpicker)
+
+colores <- c("#8A11DB", "#32CD32", "#EE9A00")
+
+
+#
+
+rm(p)
+p<- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species))+
+  geom_point()+
+  labs(title = "Largo y ancho del sépalo de flores")+
+  guides(size=FALSE)+
+  scale_color_manual(values =c("#E82C2C", "#2BAEBA", "#13F025") )
+
+p
