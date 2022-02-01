@@ -1,0 +1,88 @@
+
+## GRÁFICOS DE DISPERSIÓN CON TEXTO - geom_text
+
+
+library(ggplot2)
+library(ggrepel)
+
+
+##DATOS
+
+df<-data.frame(
+  stringsAsFactors = FALSE,
+                  Pais = c("Brazil","Belize",
+                           "Colombia","Panama","Guatemala","Costa Rica",
+                           "Nicaragua","Ecuador","Paraguay","Jamaica","Mexico",
+                           "Guyana","Chile","Argentina","Dominican Republic",
+                           "Bolivia","Peru","United States",
+                           "Trinidad and Tobago","Uruguay","El Salvador","Canada","Seychelles"),
+                Region = c("Sur","Central","Sur",
+                           "Central","Central","Central","Central","Sur",
+                           "Sur","Central","Norte","Sur","Sur","Sur",
+                           "Central","Sur","Sur","Norte","Sur","Sur","Central",
+                           "Norte","Central"),
+                  Gini = c(53.43,53.26,51.33,
+                           49.84,48.28,48.19,46.16,45.71,45.65,45.46,45.38,
+                           45.12,44.44,42.9,41.92,41.65,41.51,41.41,
+                           40.27,39.68,38.78,33.31,32.13),
+          PBIperCapita = c(14764L,7252L,14585L,
+                           31432L,8653L,20805L,5452L,11371L,12616L,9777L,
+                           19701L,13082L,24968L,22064L,18413L,8724L,12854L,
+                           62631L,25828L,23033L,8796L,49007L,27521L)
+    )
+
+
+
+#Scatter básico
+ggplot(df, aes(x=Gini, y=PBIperCapita))+
+geom_point()
+
+#Con colores
+ggplot(df, aes(x=Gini, y=PBIperCapita, color=Region))+
+  geom_point()
+
+
+#CON TEXTO
+ggplot(df, aes(x=Gini, y=PBIperCapita, color=Region, label = Pais))+
+  geom_point()+
+  geom_text()
+
+
+#Sacando puntos
+ggplot(df, aes(x=Gini, y=PBIperCapita, color=Region, label = Pais))+
+  geom_text()
+
+
+
+### Con repel
+
+ggplot(df, aes(x=Gini, y=PBIperCapita, color=Region, label = Pais))+
+  geom_point()+
+  geom_text_repel()
+
+
+
+
+# Con label repel y fill
+
+ggplot(df, aes(x=Gini, y=PBIperCapita, label = Pais, fill=Region))+
+  geom_label_repel()
+
+
+## Final, con etiquetas, sacando la A de las guías
+
+ggplot(df, aes(x=Gini, y=PBIperCapita, color=Region, label = Pais, fill=Region))+
+  geom_label_repel(color="black")+
+  geom_smooth(inherit.aes = FALSE,  se=FALSE, aes(x=Gini, y=PBIperCapita, alpha=0.1))+
+  labs(title = "Índice de Gini y PBI per cápita",
+       x = "Índice de Gini",
+       y = "PBI per cápita",
+       fill = "Región")+
+  guides(alpha=FALSE, fill = guide_legend(override.aes = aes(color = NA)))
+
+
+
+
+###  Más opciones
+
+#https://ggrepel.slowkow.com/articles/examples.html
