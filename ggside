@@ -1,0 +1,72 @@
+
+
+## GRÁFICOS con GGSIDE
+
+#https://www.business-science.io/code-tools/2021/05/18/marginal_distributions.html?utm_content=buffere9479&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
+library(ggplot2)
+
+install.packages("ggside")
+library(ggside)
+
+#https://cran.r-project.org/web/packages/ggside/vignettes/ggside_basic_usage.html
+
+##DATOS
+data(iris)
+
+#Gráfico de Dispersión BASE
+ggplot(iris, aes(y=Petal.Length, x=Petal.Width,))+
+  geom_point()
+
+#Gráfico Side eje X
+ggplot(iris, aes(y=Petal.Length, x=Petal.Width,))+
+  geom_point()+
+  geom_xsidedensity(aes(y=after_stat(density)),fill="blue", alpha=0.3)+
+  theme(ggside.panel.scale.x=0.3)
+
+##
+
+#Gráfico Side dos EJES
+ggplot(iris, aes(y=Petal.Length, x=Petal.Width))+
+  geom_point()+
+  geom_xsidedensity(aes(y=after_stat(density)),fill="blue", alpha=0.3)+
+  theme(ggside.panel.scale.x=0.3)+
+  geom_ysidedensity(aes(x=after_stat(density)),fill="blue", alpha=0.3)+
+  theme(ggside.panel.scale.y=0.3)
+
+
+#Gráfico Side con otra variable -  FINAL
+ggplot(iris, aes(y=Petal.Length, x=Petal.Width, color=Species))+
+  geom_point()+
+  geom_xsidedensity(aes(y=after_stat(density),fill=Species), alpha=0.3, position="identity")+
+  theme(ggside.panel.scale.x=0.3)+
+  geom_ysidedensity(aes(x=after_stat(density),fill=Species), alpha=0.3,position="identity")+
+  theme(ggside.panel.scale.y=0.3)
+
+#
+
+#Gráfico Side con Boxplot o con Violin
+ggplot(iris, aes(y=Petal.Length, x=Petal.Width, color=Species))+
+  geom_point()+
+  geom_xsideviolin(aes(fill=Species),alpha=0.6)+
+  theme(ggside.panel.scale.x=0.3)+
+  geom_ysideboxplot()+
+  theme(ggside.panel.scale.y=0.6)
+
+
+
+
+
+##Densiddad de las variables
+ggplot(iris, aes(x=Petal.Length, ))+
+  geom_density()
+  
+ggplot(iris, aes(x=Petal.Width, ))+
+  geom_density()
+
+
+##Densiddad de las variables
+ggplot(iris, aes(x=Petal.Length, fill=Species, position="identity",alpha=0.5))+
+  geom_density()
+
+ggplot(iris, aes(x=Petal.Width, fill=Species, position="identity",alpha=0.5))+
+  geom_density()
