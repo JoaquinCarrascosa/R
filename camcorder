@@ -1,0 +1,141 @@
+
+# CAMCORDER 
+
+#{camcorder} R package to track and automatically save graphics generated with as GIF {ggplot2}
+
+# https://github.com/thebioengineer/camcorder
+
+install.packages("camcorder")
+
+remotes::install_github("thebioengineer/camcorder")
+
+
+library(ggplot2)
+library(camcorder)
+
+
+
+
+#Por default va todo a una carpeta temporal
+gg_record(
+  dir = file.path(tempdir(), "recording100"), # where to save the recording
+  device = "png", # device to use to save images
+  width = 4,      # width of saved image
+  height = 6,     # height of saved image
+  units = "in",   # units for width and height
+  dpi = 300       # dpi to use when saving image
+)
+
+#Pueden optar por crear una carpeta para guardar las grabaciones
+gg_record(
+  dir = "C:/Users/joaqu/Desktop/gif", # where to save the recording
+  device = "png", # device to use to save images
+  width = 4,      # width of saved image
+  height = 6,     # height of saved image
+  units = "in",   # units for width and height
+  dpi = 300       # dpi to use when saving image
+)
+####
+
+ggplot(mtcars, aes(x = mpg, y = hp)) +
+  geom_point()
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(aes(shape = as.factor(gear)))
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(aes(color = as.factor(gear)))
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_point(aes(color = as.factor(gear))) +
+  geom_path()
+
+ggplot(mtcars, aes(x = mpg, y = hp)) +
+  geom_point(aes(color = disp)) +
+  geom_smooth()
+
+ggplot(mtcars, aes(x = mpg, y = hp)) +
+  geom_smooth() +
+  geom_point(aes(color = disp))
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_smooth() +
+  geom_point(aes(color = disp)) +
+  scale_color_viridis_c() +
+  theme_light()
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_smooth() +
+  geom_point(aes(color = disp)) +
+  scale_color_viridis_c() +
+  theme_light() +
+  labs(
+    title = "MPG vs Horse Power!",
+    subtitle = "Power and economy, the classic compromise!"
+  )
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_smooth() +
+  geom_point(aes(color = disp)) +
+  scale_color_viridis_c() +
+  theme_light(base_family = "Roboto Mono") +
+  labs(
+    title = "MPG vs Horse Power!",
+    subtitle = "Power and economy, the classic compromise!"
+  )
+
+ggplot(mtcars, aes(x = mpg, y = hp)) + 
+  geom_smooth() +
+  geom_point(aes(color = disp)) +
+  scale_color_viridis_c() +
+  theme_light(base_family = "Roboto Mono") +
+  labs(
+    title = "MPG vs Horse Power!",
+    subtitle = "Power and economy, the classic compromise!", 
+    x = "Efficiency (Miles/Gallon)",
+    y = "Power (Horsepower)",
+    color = "Displacement\n(Cubic Inch)"
+  )
+
+
+
+#Por default el gif se guarda en la carpeta temporal
+gg_playback(
+  name = file.path(tempdir(), "recording100", "vignette_gif.gif"),
+  first_image_duration = 4,
+  last_image_duration = 5,
+  frame_duration = .6,
+  image_resize = 800
+)
+
+
+
+
+
+
+#Podemos poner la carpeta donde lo queremos
+gg_playback(
+  name = "C:/Users/joaqu/Desktop/vignette_gif.gif",
+  first_image_duration = 4,
+  last_image_duration = 5,
+  frame_duration = .6,
+  image_resize = 800,
+  last_as_first = FALSE,
+  stoprecording = TRUE
+)
+
+
+
+##Para frenar la grabación
+gg_stop_recording()
+
+setwd("C:/Users/joaqu/Desktop")
+#Se crea el gif en el WD, podemos dejarlo en el escritorio
+gg_playback(
+  name = "vignette_gif.gif",
+  first_image_duration = 4,
+  last_image_duration = 5,
+  frame_duration = .6,
+  image_resize = 800
+)
+
