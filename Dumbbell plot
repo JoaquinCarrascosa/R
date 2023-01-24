@@ -1,0 +1,134 @@
+
+
+# DUMBBELL PLOT
+
+
+#Otros ejemplos con datos en distintos formatos
+
+#https://r-charts.com/distribution/dumbbell-plot-ggplot2/
+
+#https://datavizpyr.com/dumbbell-plot-in-r-with-ggplot2/
+
+
+install.packages("ggalt")
+
+library(ggplot2)
+library(ggalt)
+
+
+
+df<-data.frame(
+  stringsAsFactors = TRUE,
+        Propuestas = c("Propuesta 1","Propuesta 2",
+                       "Propuesta 3","Propuesta 4","Propuesta 5","Propuesta 6",
+                       "Propuesta 7","Propuesta 8","Propuesta 9"),
+      Republicanos = c(45L, 50L, 65L, 45L, 40L, 55L, 78L, 55L, 65L),
+        Democratas = c(65L, 70L, 90L, 30L, 20L, 59L, 70L, 60L, 55L)
+)
+
+
+
+
+### CON GGPLOT2
+
+ggplot(df) +
+  geom_segment(aes(x = Democratas, xend = Republicanos,
+                   y = Propuestas, yend = Propuestas)) +
+  geom_point(aes(x = Democratas, y = Propuestas), size = 5,color="blue") +
+  geom_point(aes(x = Republicanos, y = Propuestas), size = 5,color="red")+
+  xlim(0, 100)
+
+
+
+
+
+## Con GEOM_DUMBBELL
+
+ggplot(df, aes(y = Propuestas,
+           x = Democratas,
+           xend=Republicanos))+ 
+  geom_dumbbell(size_x=5,
+                size_xend=5,
+                color = "black",
+                colour_x= "blue",
+                colour_xend="red")+
+labs(title = "% de aprobación de propuestas entre demócratas y republicanos",
+  x = "% de aprobación"
+)+
+  xlim(0, 100)
+
+
+
+
+# Reordenar los datos
+
+library(forcats)
+library(tidyverse)
+
+df %>%
+  mutate(Propuestas = fct_reorder(Propuestas, Democratas)) %>%
+ggplot(aes(y = Propuestas,
+               x = Democratas,
+               xend=Republicanos,))+ 
+  geom_dumbbell(size_x=5,
+                size_xend=5,
+                color = "black",
+                colour_x= "blue",
+                colour_xend="red"
+               )+
+  labs(title = "% de aprobación de propuestas entre demócratas y republicanos",
+       x = "% de aprobación"
+  )+
+  xlim(0, 100)
+
+
+#Reordenar
+ggplot(df, aes(y = reorder(Propuestas, Republicanos),
+           x = Democratas,
+           xend=Republicanos,))+ 
+  geom_dumbbell(size_x=5,
+                size_xend=5,
+                color = "black",
+                colour_x= "blue",
+                colour_xend="red"
+  )+
+  labs(title = "% de aprobación de propuestas entre demócratas y republicanos",
+       x = "% de aprobación",
+       y = "Propuestas"
+  )+
+  xlim(0, 100)
+
+
+
+
+##Cambio en el tiempo
+
+homi<-data.frame(
+  stringsAsFactors = TRUE,
+       check.names = FALSE,
+          Ciudades = c("Ciudad 1","Ciudad 2",
+                       "Ciudad 3","Ciudad 4","Ciudad 5","Ciudad 6","Ciudad 7",
+                       "Ciudad 8"),
+            `1990` = c(30, 50, 80, 10, 50, 30, 40, 50),
+            `2022` = c(33, 56, 110, 20, 30, 12, 20, 20)
+)
+
+
+
+homi %>%
+  mutate(Ciudades = fct_reorder(Ciudades, `2022`)) %>%
+  ggplot(aes(y = Ciudades,
+             x = `1990`,
+             xend=`2022`))+ 
+  geom_dumbbell(size_x=5,
+                size_xend=5,
+                color = "black",
+                colour_x= "green",
+                colour_xend="red",
+                )+
+labs(  x = "Homicidios cada 100.000 hab. 1990 (verde) / 2022 (rojo)" )+
+  xlim(0, 120)
+
+
+# Un problema es que con este formato y geom_dumbbell es complicado tener LEGEND
+# Eso es automático si usan formato de datos long.
