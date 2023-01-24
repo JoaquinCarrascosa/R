@@ -1,0 +1,125 @@
+
+# Gráfico de CUADRADO / WAFFLE / TORTA CUADRADO
+
+install.packages("waffle")
+
+
+#para usar geom_waffle en ggplot2
+#https://liamgilbey.github.io/ggwaffle/
+devtools::install_github("liamgilbey/ggwaffle")
+
+#https://r-charts.com/part-whole/waffle-chart-ggplot2/
+
+library(ggplot2)
+library(waffle)
+library(ggwaffle)
+
+
+
+#Ejemplo con vector
+
+x <- c(25, 43, 32, 4)
+
+# Waffle chart
+waffle(x)
+
+waffle(x, rows = 8,
+       colors = c("red", "blue", "green", "yellow"))
+
+
+
+#Etiquetado
+
+x <- c(rojo=25, azul=43, verde=32, amarillo=4)
+
+# Waffle chart
+
+waffle(x, rows = 8,
+       colors = c("red", "blue", "green", "yellow"), xlab = "Diputados por partido")
+
+
+
+# Ejemplo con tabulación de datos
+
+data(iris)
+table(iris$Species)
+
+waffle_data3<-table(iris$Species)
+
+waffle(waffle_data3, rows=10)
+
+
+
+#Tabla como dataframe
+data(iris)
+iristab<-table(iris$Species)
+iristab
+
+df <- data.frame(rbind(iristab))
+
+waffle(df)
+
+
+
+#Tabla como porcentaje
+data(iris)
+iristab<-prop.table(iristab)*100
+
+
+waffle(iristab,rows=11,title="Porcentaje de cada flor")
+
+
+# https://www.geeksforgeeks.org/r-waffle-chart/
+expenses <- c(`Infants: <1(16467) `=16467, `Children:  <11(30098) `=30098,
+              `Teens: 12-17(20354)`=20354, `Adults:18+(12456) `=12456,
+              `Elderly: 65+(12456) `=12456)
+
+waffle(expenses/1000, rows=5, size=0.6, 
+       colors=c("#44D2AC", "#E48B8B", "#B67093", 
+                         "#3A9ABD", "#CFE252"), 
+                         title="Age Groups bifurcation", 
+       xlab="1 square = 1000 persons")
+
+
+
+
+##con ggwaffle
+data(iris)
+
+waffle_data <- waffle_iron(iris, aes_d(group = Species))
+
+ggplot(waffle_data, aes(x, y, fill = group)) + 
+  geom_waffle() + 
+  coord_equal() + 
+  scale_fill_waffle() + 
+  theme_waffle()
+
+
+
+#Círculos
+
+ggplot(waffle_data, aes(x, y, colour = group)) + 
+  geom_waffle(tile_shape = 'circle', size = 7) + 
+  coord_equal() + 
+  scale_colour_waffle() + 
+  theme_waffle()
+
+
+###Personalizando colores
+
+ggplot(waffle_data, aes(x, y, fill = group)) + 
+  geom_waffle() + 
+  coord_equal() + 
+scale_fill_manual(name = NULL,
+                  values = c("#fc1c03", "#03fc0f", "#f4fc03")) +
+  theme_void()
+
+
+
+
+# Más ejemplos y opciones
+
+#https://rud.is/rpubs/building-waffle-charts.html
+
+
+
