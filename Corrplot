@@ -1,0 +1,79 @@
+
+# Gráfico de Correlaciones - CORRPLOT
+
+# https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
+install.packages("corrplot")
+
+#Otras opciones 
+
+#https://r-graph-gallery.com/correlogram.html
+
+library(corrplot)
+library(ggplot2)
+
+data(mtcars)
+mtcars
+help(mtcars)
+
+
+M = cor(mtcars)
+M
+
+#Corrplot
+#Por default tiene un cículo
+corrplot(M) # by default, method = 'circle'
+
+#Con número
+corrplot(M, method = 'number') # colorful number
+
+#Scatter Caballos de fuerza y tiempo de cuarto de milla
+ggplot(mtcars,aes( x=hp, y=qsec))+
+   geom_point()
+
+#Otras opciones
+corrplot(M, method = 'square') # colorful number
+corrplot(M, method = 'shade') # Sombrear los negativos
+corrplot(M, method = 'pie') # Torta
+
+
+# Cuadrado de color, y ordenamiento alfabético
+corrplot(M, method = 'color', order = 'alphabet')
+
+
+#Ordenamiento!
+corrplot(M, order = 'AOE') #'AOE' is for the angular order of the eigenvectors
+corrplot(M, order = 'FPC') # 'FPC' for the first principal component order.
+corrplot(M, order = 'hclust') # for hierarchical clustering order
+
+
+
+
+# Hacer gráfico de la mitad !
+corrplot(M, method = 'ellipse', order = 'AOE', type = 'upper')
+corrplot(M, method = 'ellipse', order = 'AOE', type = 'lower')
+
+
+# Mitad elipse mitad número
+corrplot.mixed(M, upper = 'ellipse', order = 'FPC')
+
+
+
+   
+# Nivel de significancio
+  
+   
+testRes = cor.mtest(mtcars, conf.level = 0.95)
+testRes
+## specialized the insignificant value according to the significant level
+corrplot(M, p.mat = testRes$p, sig.level = 0.05, order = 'hclust')
+
+
+
+
+corrplot(M, p.mat = testRes$p, insig = 'p-value', sig.level = -1, order = 'hclust', type = 'upper', method="color")
+  
+
+#FINAL - Sacamos la diagonal, sacamos los no significativos, ponemos etiqueta del R.
+corrplot(M, p.mat = testRes$p, method = 'color', type = 'lower', insig ='blank',
+         addCoef.col ='black', number.cex = 0.8, order = 'AOE', diag = FALSE)
+
