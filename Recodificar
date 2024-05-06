@@ -1,0 +1,177 @@
+
+####### RECODIFICAR VARIABLES ; RECODE
+install.packages("qacBase")
+install.packages("tidiverse")
+
+library(qacBase)
+library(tidyverse)
+
+
+# https://cran.r-project.org/web/packages/qacBase/vignettes/recodes.html
+
+
+
+df<-data.frame(
+  stringsAsFactors = FALSE,
+               sex = c(1L, 2L, 1L, 2L, 2L, 2L),
+              race = c("b", "w", "a", "b", "w", "h"),
+           outcome = c("better", "worse", "same", "same", "better", "worse"),
+                Q1 = c(20L, 30L, 44L, 15L, 50L, 99L),
+                Q2 = c(15L, 23L, 18L, 86L, 99L, 35L),
+               age = c(12L, 20L, 33L, 55L, 30L, 100L),
+            rating = c(1L, 2L, 5L, 3L, 4L, 5L)
+)
+
+#formato
+newdata <- recodes(olddata, variables, from values, to values)
+
+#CUIDADO: lo hace en la misma variable!
+##################### Recodificar  (Esto es etiquetar..)
+df <- recodes(data=df, vars="sex", 
+              from=c(1,2), to=c("Male", "Female"))
+df
+
+
+### PRIMERO CREANDO UNA COPIA
+df <- df %>%
+  mutate(sexo_rec2 = sex)  %>%
+recodes( vars="sexo_rec2", 
+              from=c(1,2), to=c("Male", "Female"))
+df
+
+#########
+df <- recodes(data=df, vars="race", 
+              from=c("w", "b", "a", "h"), 
+              to=c("White", "Other", "Other", "Other"))
+  
+  
+####### Otro ejemplo
+df <- recodes(data=df, vars="outcome", 
+              from=c("better", "same", "worse"), 
+              to=c(1, 0, 0))
+
+df
+
+
+
+############Más de una variable.. y casos perdidos
+
+df <- recodes(data=df, vars=c("Q1", "Q2"), 
+              from=c(86, 99), to=NA)
+
+df
+
+
+########Variables numéricas
+
+df <- recodes(data=df, vars="age", 
+              from=c("$ <   20 | $ >  90", 
+                     "$ >=  20 & $ <= 30",
+                     "$ >   30 & $ <= 50",
+                     "$ >   50 & $ <= 90"), 
+              to=c(NA, "Younger", "Middle Aged", "Older"))
+
+df
+
+
+# el signo $ es la variable (x)
+
+df <- recodes(data=df, vars="age", 
+              from=c("$ <   20 | $ >  90", 
+                     "$ >=  20 & $ <= 30",
+                     "$ >   30 & $ <= 50",
+                     "$ >   50 & $ <= 90"), 
+              to=c(NA,
+                   "Younger",
+                   "Middle Aged",
+                   "Older"))
+
+df
+
+
+
+
+#Usando case_when , dplyr
+library(tidyverse)
+
+#https://www.rdocumentation.org/packages/dplyr/versions/1.0.10/topics/case_when
+
+#Reiniciamos df
+df<-data.frame(
+  stringsAsFactors = FALSE,
+  sex = c(1L, 2L, 1L, 2L, 2L, 2L),
+  race = c("b", "w", "a", "b", "w", "h"),
+  outcome = c("better", "worse", "same", "same", "better", "worse"),
+  Q1 = c(20L, 30L, 44L, 15L, 50L, 99L),
+  Q2 = c(15L, 23L, 18L, 86L, 99L, 35L),
+  age = c(12L, 20L, 33L, 55L, 30L, 100L),
+  rating = c(1L, 2L, 5L, 3L, 4L, 5L)
+)
+
+
+
+df<-df %>%
+  mutate(sexo_rec = case_when(sex == 1 ~ "Varón",
+                              sex == 2 ~ "Mujer"))
+
+df
+
+
+df<-df %>%
+  mutate(age_rec = case_when(age %in% c(0:19) ~  NA_character_,
+                             age %in% c(20:30) ~ "20 a 30",
+                             age %in% c(31:50) ~ "31 a 50",
+                             age %in% c(51:90) ~ "51 a 90",
+                             age %in% c(90:1000) ~ NA_character_))
+
+df
+
+
+
+df<-df %>%
+  mutate(age_rec2 = case_when(age > 49 ~ "50 o más",
+                              age < 50 ~ "Hasta 50 años"))
+
+df
+
+
+
+
+
+
+df<-df %>%
+  mutate(age_rec3 = case_when(age %in% c(0:19) ~  NA_real_,
+                             age %in% c(20:30) ~ 1,
+                             age %in% c(31:50) ~ 2,
+                             age %in% c(51:90) ~ 3
+                            ))
+
+df
+
+class(df$age_rec3)
+
+
+######## 
+df<-df %>%
+  mutate(age_rec4 = case_when(age >= 33 ~ "33 o más",
+                              age <= 32 ~ "Hasta 32 años"))
+
+df
+
+
+#######Combinaciones; AND
+df<-df %>%
+  mutate(age_sex = case_when(age > 49  & sex== 1 ~ "Hombres 50 o más",
+                              age < 50 & sex== 1 ~ "Hombres Hasta 50 años",
+                              age > 49  & sex== 2 ~ "Mujeres 50 o más",
+                              age < 50 & sex== 2 ~ "Mujeres Hasta 50 años"))
+
+df
+
+
+############# OR
+df<-df %>%
+    mutate(q2 = case_when(Q1 > 20 | Q2> 20 ~ "Q + de 20",
+                               Q1 <= 20 | Q2<= 20 ~ "Q - o = a 20"))
+
+df
